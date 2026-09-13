@@ -8,7 +8,7 @@ from miniviki.mca import (
     ContextHandle,
     ContextInit,
     StreamEvent,
-    Transport
+    Transport,
 )
 
 

@@ -9,7 +9,7 @@ from .events import (
     TERMINAL_KINDS,
     TOOL_CALL,
     TOOL_RESULT,
-    StreamEvent
+    StreamEvent,
 )
 from .transport import Transport
 from .types import ClientTool, ContextHandle, ContextInit, Turn
