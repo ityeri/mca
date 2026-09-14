@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Any, Self
 
 from .capability import ClientCapability
+from .events import TOOL_REQUEST, WAITING_APPROVAL, WAITING_CLIENT, StreamEvent
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,12 +65,46 @@ class ContextHandle:
 
 
 @dataclass(frozen=True, slots=True)
+class ClientRequest:
+    """A tool call the server cannot run itself, because it belongs to this machine."""
+
+    call_id: str
+    tool: str = ""
+    client_tool: str = ""
+    arguments: dict[str, Any] = field(default_factory=dict)
+    client: str = ""
+
+    @staticmethod
+    def from_json(raw_data: dict[str, Any]) -> Self:
+        return ClientRequest(
+            call_id=str(raw_data.get("call_id", "")),
+            tool=str(raw_data.get("tool", "")),
+            client_tool=str(raw_data.get("client_tool", "")),
+            arguments=dict(raw_data.get("arguments") or {}),
+            client=str(raw_data.get("client", ""))
+        )
+
+
+@dataclass(frozen=True, slots=True)
 class Turn:
     text: str
     status: str
-    events: tuple[Any, ...] = ()
+    events: tuple[StreamEvent, ...] = ()
     run_id: str = ""
 
     @property
     def needs_approval(self) -> bool:
-        return self.status == "waiting_approval"
+        return self.status == WAITING_APPROVAL
+
+    @property
+    def needs_client(self) -> bool:
+        return self.status == WAITING_CLIENT
+
+    @property
+    def client_requests(self) -> tuple[ClientRequest, ...]:
+        """What this turn is waiting for this machine to run."""
+        return tuple(
+            ClientRequest.from_json(event.payload)
+            for event in self.events
+            if event.kind == TOOL_REQUEST
+        )

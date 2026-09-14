@@ -8,11 +8,14 @@ from .events import (
     STATUS,
     TERMINAL_KINDS,
     TOOL_CALL,
+    TOOL_REQUEST,
     TOOL_RESULT,
+    WAITING_APPROVAL,
+    WAITING_CLIENT,
     StreamEvent,
 )
 from .transport import Transport
-from .types import ClientTool, ContextHandle, ContextInit, Turn
+from .types import ClientRequest, ClientTool, ContextHandle, ContextInit, Turn
 
 __all__ = [
     "APPROVAL_REQUEST",
@@ -22,8 +25,12 @@ __all__ = [
     "STATUS",
     "TERMINAL_KINDS",
     "TOOL_CALL",
+    "TOOL_REQUEST",
     "TOOL_RESULT",
+    "WAITING_APPROVAL",
+    "WAITING_CLIENT",
     "ClientCapability",
+    "ClientRequest",
     "ClientTool",
     "ContextGone",
     "ContextHandle",

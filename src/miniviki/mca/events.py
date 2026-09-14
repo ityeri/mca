@@ -4,12 +4,19 @@ from typing import Any, Self
 MESSAGE = "message"
 TOOL_CALL = "tool_call"
 TOOL_RESULT = "tool_result"
+TOOL_REQUEST = "tool_request"
 BOUNDARY = "boundary"
 APPROVAL_REQUEST = "approval_request"
 RUN_END = "run_end"
 STATUS = "status"
 
-TERMINAL_KINDS = (RUN_END, APPROVAL_REQUEST)
+#: The status a turn carries when it stopped because the client has work to do.
+WAITING_CLIENT = "waiting_client"
+WAITING_APPROVAL = "waiting_approval"
+
+# A turn ends when the server hands control back: either a human has to decide, or
+# the client has to run something on its own machine. Both are the client's move.
+TERMINAL_KINDS = (RUN_END, APPROVAL_REQUEST, TOOL_REQUEST)
 
 
 @dataclass(frozen=True, slots=True)
